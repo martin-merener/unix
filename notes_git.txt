@@ -1,0 +1,227 @@
+Git Tutorial: Fixing Common Mistakes and Undoing Bad Commits
+
+How to undo mistakes.
+We make changes to a file, and then we realize we want to undo all those changes.
+
+After making changes, we do 
+	git status
+		See the file has been modified in the working directory
+	git diff
+		See the differences between current in staging and new changes
+
+	git checkout <file_name>
+	git status
+		we will see that the working directory is clean
+
+	git diff
+		No changes
+
+Now suppose we do changes, and we add and commit the file.
+We may make a mistake in the commit message. 
+	git log
+		shows the commit but with the wrong message.
+
+	git commit --amend -m "<correct message>"
+	
+	git log
+		will not add a new commit, but just modify the message as desired
+		Note that the hash of the commit gets updated (the amend in the mesage is part of the commit)
+		There are ways of correcting commits without changing the history (hashes).
+
+Suppose we add a .gitignore file but we want it to be part of the last commit.
+We update the .gitignore and then add the file.
+	git commit -- ammend [enter]
+		Opens the editor to change the commit message. Save and close
+
+	git log
+		Will not show a new commit 
+	git log --stat
+		will show the files updated in the commit
+	Again this changes the hash
+
+Suppose we made a bunch of commits to the master branch instead of a feature branch we were working on.
+This is fairly common mistake. Committing to the wrong branch.
+We can move a commit in the master branch to the feature branch.
+This means two things: make the committed changes actually into the feature branch, and return the master branch to the state it was before the wrong commit.
+	We do "cherry pick"
+	git log
+		Grab the hash of the commit we want to move
+
+	git checkout <feature_branch>
+
+	git log
+		Check we only have the commits before the one we meant to make
+
+	git cherry-pick <copied hash>
+
+	git log
+		will show the commit in the feature branch
+
+But cherry-pick does not delete the commit in the master branch
+We will do a reset. There are three types of reset.
+Soft reset:
+	git checkout master
+
+	git log
+		copy and paste the hash of the commit we want to delete
+
+	git reset --soft <copied hash>
+
+	git log
+		will show the wrong commit is gone
+
+	git status
+		it will show that the files of the wrong commit to the master branch are still in the staging area
+
+Default (mix) reset
+	git reset <copied hash> 
+		This is the default, mix
+
+	git log
+		the wrong commit is gone
+
+	git status
+		now the changes in the commit we made (wrong) are still in the working directory (not in the staging area)
+
+Hard reset
+
+	git reset --hard <copied hash>
+
+	git log
+		same as before
+
+	git status
+		resets the tracked files. So we sill still see untracked files in the working directory
+
+To get rid of the untracked files:
+	git clean -df [untracked directories and files]
+
+	git status
+		done.
+
+If we actually did not want to remove the commit
+
+	git reflog
+		shows all the things we did in the commits from most recent to oldest.
+
+We would grab the hash right before the reset what we did wrong.
+	git checkout <hash>
+
+	git log
+
+		Now are not in a branch. We are in a "detached head-state"
+		Where we are is going to be trashed in the future.
+		To save the changes we need to make a branch out of it.
+
+	git branch backup
+
+	git branch
+		will show we are in a HEAD detached
+		will show the backup branch
+
+	git checkout master
+
+	git branch
+		shows the backup branch
+
+	git checkout backup
+
+So reflog can be useful if we deleted things that we needed.
+
+Another way to fix commits that were wrong, is to use revert. This is new commits. Not re-writing history. Does not modify or delete existing commits.
+It makes new commits on top of those. Just reverting the undesired effects.
+
+	git log
+
+		will show the commit we did wrong, but other people already checked out that commit
+		grab the hash.
+
+	git revert hash
+		keep the message as default
+
+	git log
+		will show the previous commits (including the wrong one), plus the new commit of the revert.
+
+	git diff hash_wrong_commit hash_revert_commit
+		shows the difference between the two commits 
+
+
+Git Tutorial: Using the Stash Command
+
+git stash command: it allows to put changes made in a temporary place, if we are not sure what to do with them.
+With the changes in the stash, we can switch to other branch, and keep working, until we figure out what to do with the stashed changes.
+
+After some changes were made, we can do:
+
+	git stash save "<message about the stashed chenges>"
+
+	git diff
+		nothing to show
+
+	git status
+		nothing to commit
+
+	git stash list
+		will show the stashes (with message)
+
+To bring the changes back:
+
+	git stash apply stash@{0}
+		will bring back the changes. But will keep the stash
+
+	git stash list
+		will show the stash is still there 
+
+	git stash pop
+		this will grab the first stash in the list, apply the changes, and drop it
+
+	git stash list
+		will not show the stash any more
+
+	git diff
+		now will show the difference
+
+	git stash drop stash@{n} 
+		will drop the indicated stash
+
+	git stash clear
+		remove all stashes
+
+Git stash can also be used if we did changes in the wrong branch (e.g., master), but were meant to another branch, and we do not want to lose them
+So we can stash them, then switch to the right branch, and take the changes from the stash pile. Stash is carried over from branch to branch.
+
+	git stash 
+	git checkout <right branch>
+	git stash pop
+
+Video: Git Tutorial: Difference between "add -A", "add -u", "add .", and "add *"
+
+These two are the same:
+	git add --all
+	git add -A
+		add all the new/modified/deleted changes in the entire working tree (directories and subdirectories) to the staging area
+
+	git add -A my_dir/
+	git add my_dir/ (but in git v1 would leave unadded the deleted files)
+		only adds the new/modified/deleted changes within that directory
+
+	git add --update
+	git add -u
+		adds all modified/deleted. Not the new files (untracked). This is for the entire working tree.
+
+	git add -u my_dir/
+		only in the directory
+
+	git add . 
+		Seems to be the same things as git add -A. But this is true only if you are in the top directory.
+		If you are in a subdirectory, git add ., would add all modified/deleted/new files in the current directory and subdirectories.
+		While git add -A (run in a subdirectory), would add all modified/deleted/new files in the entire working tree.s
+
+	
+
+
+
+
+
+
+

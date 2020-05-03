@@ -1,0 +1,116 @@
+
+=================================================================================================================
+UNIX (mostly bash)
+
+man ls | less
+	would allow search through the manual of the command ls
+
+ls --help | less
+	same idea, if man is not available
+
+ls -ltr | less
+	if ls lists many files, then this would allow us to go up and down
+
+git remote add origin <url>
+	would link a local initialized git repository with a remote repository
+
+~ represents the home directory
+so: cd ~, or cd, both change to home directory
+
+cd /
+	changes to root directory
+
+rm file-???.txt
+	wild card: ? replaces an unknown character
+
+$HOME
+	environment variable storing the home directory
+
+env
+	lists all environment variables
+
+$SHELL
+	environment variable for the shell. There are many
+	One very common shell is bash
+
+export var value
+	Command to change the value of the variable var in bash
+
+export PATH=/usr/bin/
+	an example of changing an evironment variable
+
+There are programs that are run every time the computer starts
+One can add to this program the changes of variable that one desires to make
+In bash these files are (they are hidden):
+.bashrc, .bash_profile, .bash_login, .profile
+
+which git
+	shows the location for the executable file git
+	usually usr/bin/git	
+
+ls -ltr /usr/bin | less
+	allows to go up and down the list of executables in /usr/bin
+
+echo $PATH
+	list the locations where unix looks for executable files when we type the corresponding command, e.g., ls
+	New commands' locations can be added to that path
+
+
+=================================================================================================================
+LINUX
+
+cat 
+	used to type out a file (or combine files)
+
+head
+	used to show the first few lines of a file
+tail
+	used to show the last few lines of a file
+
+man
+	used to view documentation.
+
+Elements of input lines in shell: commands options arguments
+Example: rm -r folder_name
+
+whereis <command_name/app_name>
+	returns the full path to the file with the command 
+
+
+An absolute pathname begins with the root directory and follows the tree until it reaches the desired directory/file. Absolute paths always start with /.
+A relative pathname starts from the present working directory. Relative paths never start with /.
+It is most convenient to use relative paths, which require less typing. 
+Shortcuts: . (present directory), .. (parent directory) and ~ (your home directory).
+
+tree
+	command to show the whole tree stucture of the file system
+tree -d
+	same but just showing directories, not files
+
+ls -i
+	this argument adds inode number along with each object file, which is unique
+
+With cd -, one can go back to the previous directory, but this just remember the previous one, not beyond that.
+Instead of using cd <path>, one can use: 
+	pushd <path>
+This not only makes the change, it also adds into a stack, the directories from which we changed. 
+So then using popd, one can go back in reverse chronological order, to the paths visited, until the stack is empty.
+
+which ip
+	returns path of the command ip
+whereis ip
+	returns multiple paths related to the command, including the man page
+
+cat
+	viewing files that are not very long; it does not provide any scroll-back.
+tac	
+	same a cat but starting with the last line
+less:
+	Used to view larger files because it is a paging program. It pauses at each screen full of text, provides scroll-back capabilities, and lets you search and navigate within the file. 
+	Note: Use / to search for a pattern in the forward direction and ? for a pattern in the backward direction. 
+tail	
+	Used to print the last 10 lines of a file by default. You can change the number of lines by doing -n 15 or just -15
+head	
+	The opposite of tail
+
+	
