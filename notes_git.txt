@@ -1,4 +1,167 @@
-Git Tutorial: Fixing Common Mistakes and Undoing Bad Commits
+====================
+||  NOTES on GIT  ||
+====================
+
+
+====================================================================================
+YouTube: Git Tutorial for Beginners - Command-Line Fundamentals, Corey Schafer
+====================================================================================
+
+Configuring git:
+
+	git config --global user.name "<Last First names>"
+	git config --global user.email "<email address>"
+
+	git config --list
+		This will list all the configuration values
+
+
+Getting help:
+
+	git <command> --help
+
+	For example: git config --help
+	Also works: git help config
+
+
+-----------------------------------
+Initializing an existing repository
+-----------------------------------
+
+	cd <desired directory>
+	git init
+
+	ls -la
+		Lists all items, including hidden ones, like hidden directory .git, containing everything about the git repository.
+		So to stop using git and stop tracking changes, remove the .git folder: rm -rf .git (in the desired directory).
+
+
+To ignore files that we do not want git to track, create a hidden fite called .gitignore, listing the files to ignore.
+	touch .gitignore
+		It's a text file listing in each row a file or directory name to be ignored.
+		E.g., to ignore the compiled bytecode files with extension .pyc, add the line *.pyc
+			These files are created by python when one imports a module, so that next time it is imported it is faster.
+		E.g., ignore a hidden file called .myStuff
+		Once the .gitignore file is created, it has to be added and committed (the .gitignore file is tracked by git)
+
+
+Add files:
+	git add -A
+		adds all new/changed files.
+
+	git add .gitignore
+		it adds that particular file to the staging area.
+
+Working directory: everything in the directory was are working on.
+Staging area: the stuff that was added.
+
+After adding, but before committing, one can remove files from the staging area:
+	git reset <added_file>
+		This will have the same effect as not having added the file.
+	git reset
+		This will have the same effect as not having added any file.
+
+Committing changes in the staging area:
+	git commit -m "<detailed message>"
+
+See commits history:
+	git log
+
+
+---------------------------
+Cloning a remote repository
+---------------------------
+
+Clone a url:
+	git clone <https://github...>
+
+See information about the remote repository:
+	git remote -v
+	git branch -a
+
+After making changes in the local repository:
+	git diff
+		Shows the changes made to the code
+
+	git status
+		Shows the items in the working directory, yet not in staging
+
+	git add -A
+		adds items to staging area
+
+	git commit -m "<message>"
+
+After committing all changes one may want to push the changes to the remote branch that one is working on.
+Before pushing, one should push in case there were changes while we worked.
+
+	git pull origin master
+	git push origin master
+
+	(or whatever branch one is working on)
+
+In reality one usually works on a branch.
+
+	git branch <new_branch_name>
+		creates a new branch
+
+	git checkout <branch_name>
+		switches to the branch
+
+	git branch
+		lists all existing branches
+
+After making all the desired changes in the branch:
+
+	git add -Add
+	git commit -m "<message>"
+		This only affected the local branch we are working on.
+
+We can now push the new changes committed to the current branch in the remote repository.
+
+	git push -u origin <branch-name>
+		This associates the branch name to the remote repository, from now on.
+
+	git branch -a
+		lists all branches, local and remote.
+
+
+After doing a git pull, do git fetch (otherwise it says that local is n commits ahead)
+
+Once the local and remote branches are in sync, we can merge the branch to the master (or whatever other branch the current one branched off, e.g., development).
+In this example we merge the new updated branch to the master branch.
+	git checkout master
+		go to the branch from which we want to merge.
+	git pull origin master
+		we are local, so we first want to make sure master has all the last changes in the remote.
+	git branch --merged
+		Shows what branches were merged to master branch.
+	git merge <branch_name_to_merge_to_master>
+		Now the feature branch was merged to the master branch (local)
+	git push origin master
+		Now the local master (with the new feature branch just merged to it) is pushed to the remote master branch.
+	(go to other local repositories, if any, e.g., one in laptop and one in the node, and update that repo too:
+		git checkout master
+		git pull origin master
+		git fetch
+	)
+	git branch --merged
+		will show that the feature branch was merged
+	git branch -d <branch_name_to_merge_to_master>
+		Since the feature branch was merged, it can now be deleted. But this is local.
+	git branch -a
+		Will show if the feature branch is still in the remote repository.
+	git push origin --delete <branch_name_to_merge_to_master>
+		Will delete the feature branch from the remote.
+	git branch -a
+		Will show that the feature branch was deleted from the remote.
+	git remote prune origin
+		Still need to remove the branch in other local repos (e.g., note)
+
+
+
+====================================================================================
+YouTube: Git Tutorial series - Fixing Common Mistakes and Undoing Bad Commits
+====================================================================================
 
 How to undo mistakes.
 We make changes to a file, and then we realize we want to undo all those changes.
@@ -146,7 +309,10 @@ It makes new commits on top of those. Just reverting the undesired effects.
 		shows the difference between the two commits 
 
 
-Git Tutorial: Using the Stash Command
+
+======================================================
+YouTube: Git Tutorial series - Using the Stash Command
+======================================================
 
 git stash command: it allows to put changes made in a temporary place, if we are not sure what to do with them.
 With the changes in the stash, we can switch to other branch, and keep working, until we figure out what to do with the stashed changes.
@@ -194,7 +360,11 @@ So we can stash them, then switch to the right branch, and take the changes from
 	git checkout <right branch>
 	git stash pop
 
-Video: Git Tutorial: Difference between "add -A", "add -u", "add .", and "add *"
+
+
+==================================================================================
+YouTube: Git Tutorial: Difference between "add -A", "add -u", "add .", and "add *"
+==================================================================================
 
 These two are the same:
 	git add --all
@@ -217,11 +387,64 @@ These two are the same:
 		If you are in a subdirectory, git add ., would add all modified/deleted/new files in the current directory and subdirectories.
 		While git add -A (run in a subdirectory), would add all modified/deleted/new files in the entire working tree.s
 
+
+
+---------------------------------------------------------------------------------
+After creating a branch in the remote repository, using the web-browser interface
+---------------------------------------------------------------------------------
+
+After you create a branch, you need to check it out from your local system. Use the fetch and checkout commands:
+
+	git fetch && git checkout <branch_name>
+
+Make your changes locally and then add, commit, and push your changes to the branch:
+
+	git add .
+	git commit -m "adding ..."
+	git push origin <branch_name>
+
+
+---------------------------
+To create a branch locally
+---------------------------
+
+First go to the branch from which we want to branch off:
 	
+	git checkout <branch_from_where_to_branch_off, e.g., master, development>
+
+Creates a new feature branch:
+
+	git branch <feature_branch>
+
+Switch to the new branch:
+
+	git checkout <feature_branch>
+
+
+
+------------------------------------------
+Add a branch created locally to the remote
+------------------------------------------
+
+After creating a branch locally, say "feature" branched from master, and commiting changes to it, we may want to push changes to the remote.
+For that we use:
+	git push --set-upstream origin feature
+Now the feature will be a new branch in the remote repository.
 
 
 
 
 
+--------------
+Some tutorials
+--------------
+
+coursera: version control with git
+https://www.atlassian.com/git/tutorials
+https://www.youtube.com/watch?v=0fKg7e37bQE   
+https://www.youtube.com/watch?annotation_id=annotation_149309897&feature=iv&src_vid=0fKg7e37bQE&v=oFYyTZwMyAg
+https://www.youtube.com/watch?v=HVsySz-h9r4
+https://www.youtube.com/watch?v=FdZecVxzJbk
+http://rogerdudler.github.io/git-guide/
 
 

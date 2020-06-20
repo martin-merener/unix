@@ -113,4 +113,26 @@ tail
 head	
 	The opposite of tail
 
-	
+touch <file_name>
+	creates a file
+
+touch -t <YYMMDDHHMM> <file_name>
+	creates the files with that time stamp
+
+If do_something is a program that reads from stdin and writes to stdout and stderr, we can change its input and/or output sources:
+	do_something < input-file
+	do_something > output-file
+stderr is not the same as stdout, error messages will still be seen on the terminal. Alternatively:
+	do_something 2> error-file
+To send all outputs to the same place
+	do_something > all-output-file 2>&1
+Or in bash:
+	do_something >& all-output-file
+
+One can pipe the output of one command or program into another as its input.
+	command1 | command2 | command3
+
+locate: used to search, matching all entries that contain a specified character string
+We can use the grep program as a filter. grep will print only the lines that contain one or more specified strings, as in: 
+	locate zip | grep bin
+will list all the files and directories with both zip and bin in their name. So first locate all those with zip, then filter those with bin.
